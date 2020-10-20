@@ -34,15 +34,16 @@ const browserSync = done => {
     server: {
       baseDir: dist
     },
-    port: 3000
+    port: 3000,
+    online: true,
   });
   done();
 };
 
-const browserSyncReload = done => {
-  browsersync.reload();
-  done();
-};
+// const browserSyncReload = done => {
+//   browsersync.reload();
+//   done();
+// };
 
 const clean = () => {
   return del([config.production ? build : dist]);
@@ -53,19 +54,7 @@ const images = () => {
     .src(src + config.images + '/**/*')
     .pipe(newer((config.production ? build : dist) + config.images))
     .pipe(
-      imagemin([
-        imagemin.gifsicle({ interlaced: true }),
-        imagemin.mozjpeg({ quality: 75, progressive: true }),
-        imagemin.optipng({ optimizationLevel: 5 }),
-        imagemin.svgo({
-          plugins: [
-            {
-              removeViewBox: false,
-              collapseGroups: true
-            }
-          ]
-        })
-      ])
+      imagemin()
     )
     .pipe(gulp.dest((config.production ? build : dist) + config.images));
 };
